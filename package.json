@@ -4,7 +4,7 @@
   "description": "Achievio is a goal setter app.",
   "license": "MIT",
   "author": "Kokilan.R",
-  "type": "commonjs",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +13,7 @@
 
 
 
-    
+
   },
   "dependencies": {
     "colors": "^1.4.0",
