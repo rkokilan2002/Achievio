@@ -4,6 +4,7 @@ import expressAsyncHandler from "express-async-handler";
 import User from '../model/userModel.js';
 
 
+
 // @desc Register User
 // @route POST /api/users
 // @access Public
@@ -29,14 +30,15 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
     const user = await User.create({
         name,
         email,
-        password: hashedpassword
+        password: hashedpassword,
     })
 
     if (user) {
         res.status(201).json({
             _id: user.id,
             user: name,
-            email: email
+            email: email,
+            token: generateToken(user._id),
         })
     } else {
         res.status(400);
@@ -49,12 +51,32 @@ export const registerUser = expressAsyncHandler(async (req, res) => {
 // @route POST /api/users/login
 // @access Public
 export const loginUser = expressAsyncHandler(async (req, res) => {
-    res.json({ message: 'Log-In User' });
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            id: user._id,
+            user: user.name,
+            email: email,
+            token: generateToken(user._id),
+        })
+    } else {
+        res.status(400);
+        throw new Error('Invalid User Data');
+    }
+
 });
+
+// @Generate JWT
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRETE, { expiresIn: '30d' })
+}
 
 // @desc Get User Data
 // @route GET /api/users/me
-// @access Public
+// @access Private
 export const getMe = expressAsyncHandler(async (req, res) => {
     res.json({ message: 'Current User Data' });
 });

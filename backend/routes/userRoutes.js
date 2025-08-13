@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getMe, loginUser, registerUser } from "../controllers/uesrController.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 
 
@@ -13,7 +14,7 @@ router.post('/', registerUser);
 router.post('/login', loginUser);
 
 // @route /api/users/me
-router.get('/me', getMe);
+router.get('/me',protect, getMe);
 
 
 
